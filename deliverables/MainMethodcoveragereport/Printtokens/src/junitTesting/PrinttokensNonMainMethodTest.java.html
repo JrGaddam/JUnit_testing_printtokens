@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PrinttokensNonMainMethodTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">PrinttokensMainMethodTest (Dec 12, 2024 5:17:30 PM)</a> &gt; <a href="../../index.html" class="el_group">Printtokens</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">junitTesting</a> &gt; <span class="el_source">PrinttokensNonMainMethodTest.java</span></div><h1>PrinttokensNonMainMethodTest.java</h1><pre class="source lang-java linenums">package junitTesting;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import java.io.*;
+
+<span class="nc" id="L8">class PrinttokensNonMainMethodTest {</span>
+
+    static Printtokens ob;
+    
+    @BeforeAll
+    static void initialize() {
+<span class="nc" id="L14">        ob = new Printtokens();</span>
+<span class="nc" id="L15">    }</span>
+    
+    @Test
+    void get_token_test() {
+<span class="nc" id="L19">        testGetToken(&quot;or 123 #x \&quot;sample\&quot; ;note&quot;, new String[]{&quot;or&quot;, &quot;123&quot;, &quot;#x&quot;, &quot;\&quot;sample\&quot;&quot;, &quot;;note&quot;});</span>
+<span class="nc" id="L20">        testGetToken(&quot;if (a1 =&gt; 7) [b2] `test,&quot;, new String[]{&quot;if&quot;, &quot;(&quot;, &quot;a1&quot;, &quot;=&gt;&quot;, &quot;7&quot;, &quot;)&quot;, &quot;[&quot;, &quot;b2&quot;, &quot;]&quot;, &quot;`&quot;, &quot;test&quot;, &quot;,&quot;});</span>
+<span class="nc" id="L21">        testGetToken(&quot;lambda x, y&quot;, new String[]{&quot;lambda&quot;, &quot;x&quot;, &quot;,&quot;, &quot;y&quot;});</span>
+<span class="nc" id="L22">        testGetToken(&quot;xor 42 / 3&quot;, new String[]{&quot;xor&quot;, &quot;42&quot;, &quot;/&quot;, &quot;3&quot;});</span>
+<span class="nc" id="L23">    }</span>
+    
+    private void testGetToken(String input, String[] expected) {
+<span class="nc" id="L26">        BufferedReader br = new BufferedReader(new StringReader(input));</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        for (String exp : expected) {</span>
+<span class="nc" id="L28">            assertEquals(exp, ob.get_token(br));</span>
+        }
+<span class="nc" id="L30">        assertNull(ob.get_token(br));</span>
+<span class="nc" id="L31">    }</span>
+    
+    @Test
+    void is_token_end_test() {
+<span class="nc" id="L35">        assertTrue(Printtokens.is_token_end(0, -1));</span>
+<span class="nc" id="L36">        assertTrue(Printtokens.is_token_end(1, '&quot;'));</span>
+<span class="nc" id="L37">        assertFalse(Printtokens.is_token_end(1, 'a'));</span>
+<span class="nc" id="L38">        assertTrue(Printtokens.is_token_end(2, '\n'));</span>
+<span class="nc" id="L39">        assertFalse(Printtokens.is_token_end(2, 'x'));</span>
+<span class="nc" id="L40">        assertTrue(Printtokens.is_token_end(0, ' '));</span>
+<span class="nc" id="L41">        assertTrue(Printtokens.is_token_end(0, ';'));</span>
+<span class="nc" id="L42">    }</span>
+    
+    @Test
+    void is_keyword_test() {
+<span class="nc" id="L46">        assertTrue(Printtokens.is_keyword(&quot;if&quot;));</span>
+<span class="nc" id="L47">        assertTrue(Printtokens.is_keyword(&quot;xor&quot;));</span>
+<span class="nc" id="L48">        assertTrue(Printtokens.is_keyword(&quot;=&gt;&quot;));</span>
+<span class="nc" id="L49">        assertFalse(Printtokens.is_keyword(&quot;while&quot;));</span>
+<span class="nc" id="L50">        assertFalse(Printtokens.is_keyword(&quot;for&quot;));</span>
+<span class="nc" id="L51">    }</span>
+    
+    @Test
+    void is_num_constant_test() {
+<span class="nc" id="L55">        assertTrue(Printtokens.is_num_constant(&quot;4&quot;));</span>
+<span class="nc" id="L56">        assertTrue(Printtokens.is_num_constant(&quot;123&quot;));</span>
+<span class="nc" id="L57">        assertFalse(Printtokens.is_num_constant(&quot;3.14&quot;));</span>
+<span class="nc" id="L58">        assertFalse(Printtokens.is_num_constant(&quot;x2&quot;));</span>
+<span class="nc" id="L59">        assertFalse(Printtokens.is_num_constant(&quot;123.1&quot;));</span>
+<span class="nc" id="L60">    }</span>
+    
+    @Test
+    void is_str_constant_test() {
+<span class="nc" id="L64">        assertTrue(Printtokens.is_str_constant(&quot;\&quot;Hello\&quot;&quot;));         </span>
+<span class="nc" id="L65">        assertFalse(Printtokens.is_str_constant(&quot;\&quot;Unclosed&quot;));       </span>
+<span class="nc" id="L66">        assertFalse(Printtokens.is_str_constant(&quot;1&quot;));         </span>
+<span class="nc" id="L67">        assertTrue(Printtokens.is_str_constant(&quot;\&quot;\&quot;&quot;));             </span>
+<span class="nc" id="L68">        assertFalse(Printtokens.is_str_constant(&quot;\&quot;\0\&quot;&quot;));          </span>
+<span class="nc" id="L69">        assertFalse(Printtokens.is_str_constant(&quot;\&quot;A\0B\&quot;&quot;));                </span>
+<span class="nc" id="L70">    }</span>
+
+    
+    @Test
+    void is_char_constant_test() {
+<span class="nc" id="L75">        assertTrue(Printtokens.is_char_constant(&quot;#a&quot;));</span>
+<span class="nc" id="L76">        assertTrue(Printtokens.is_char_constant(&quot;#Z&quot;));</span>
+<span class="nc" id="L77">        assertFalse(Printtokens.is_char_constant(&quot;#1&quot;));</span>
+<span class="nc" id="L78">        assertFalse(Printtokens.is_char_constant(&quot;#ab&quot;));</span>
+<span class="nc" id="L79">    }</span>
+    
+    @Test
+    void is_identifier_test() {
+<span class="nc" id="L83">        assertTrue(Printtokens.is_identifier(&quot;validVar&quot;));</span>
+<span class="nc" id="L84">        assertTrue(Printtokens.is_identifier(&quot;x1y2z3&quot;));</span>
+<span class="nc" id="L85">        assertFalse(Printtokens.is_identifier(&quot;2invalid&quot;));</span>
+<span class="nc" id="L86">        assertFalse(Printtokens.is_identifier(&quot;no-hyphens&quot;));</span>
+<span class="nc" id="L87">    }</span>
+    
+    @Test
+    void is_spec_symbol_test() {
+<span class="nc" id="L91">        assertTrue(Printtokens.is_spec_symbol('['));</span>
+<span class="nc" id="L92">        assertTrue(Printtokens.is_spec_symbol(']'));</span>
+<span class="nc" id="L93">        assertTrue(Printtokens.is_spec_symbol('/'));</span>
+<span class="nc" id="L94">        assertFalse(Printtokens.is_spec_symbol('a'));</span>
+<span class="nc" id="L95">        assertFalse(Printtokens.is_spec_symbol('2'));</span>
+<span class="nc" id="L96">    }</span>
+    
+    @Test
+    void token_type_test() {
+<span class="nc" id="L100">        assertEquals(Printtokens.keyword, Printtokens.token_type(&quot;lambda&quot;));</span>
+<span class="nc" id="L101">        assertEquals(Printtokens.spec_symbol, Printtokens.token_type(&quot;[&quot;));</span>
+<span class="nc" id="L102">        assertEquals(Printtokens.identifier, Printtokens.token_type(&quot;myVar&quot;));</span>
+<span class="nc" id="L103">        assertEquals(Printtokens.num_constant, Printtokens.token_type(&quot;42&quot;));</span>
+<span class="nc" id="L104">        assertEquals(Printtokens.str_constant, Printtokens.token_type(&quot;\&quot;test\&quot;&quot;));</span>
+<span class="nc" id="L105">        assertEquals(Printtokens.char_constant, Printtokens.token_type(&quot;#x&quot;));</span>
+<span class="nc" id="L106">        assertEquals(Printtokens.comment, Printtokens.token_type(&quot;;comment&quot;));</span>
+<span class="nc" id="L107">        assertEquals(Printtokens.error, Printtokens.token_type(&quot;@invalid&quot;));</span>
+<span class="nc" id="L108">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span>PrinttokensMainMethodTest (Dec 12, 2024 5:17:30 PM)</div></body></html>

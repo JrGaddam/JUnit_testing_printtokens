@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PrinttokensMainMethodTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">PrinttokensMainMethodTest (Dec 12, 2024 5:17:30 PM)</a> &gt; <a href="../../index.html" class="el_group">Printtokens</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">junitTesting</a> &gt; <span class="el_source">PrinttokensMainMethodTest.java</span></div><h1>PrinttokensMainMethodTest.java</h1><pre class="source lang-java linenums">package junitTesting;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import java.io.*;
+
+<span class="fc" id="L7">class PrinttokensMainMethodTest {</span>
+
+    @Test
+    public void testMainWithMultipleArguments() throws IOException {
+<span class="fc" id="L11">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L12">        System.setOut(new PrintStream(output));</span>
+<span class="fc" id="L13">        String[] args = {&quot;input1.txt&quot;, &quot;input2.txt&quot;};</span>
+<span class="fc" id="L14">        Printtokens.main(args);</span>
+<span class="fc" id="L15">        assertEquals(&quot;Error! Please give the token stream\n&quot;, output.toString());</span>
+<span class="fc" id="L16">    }</span>
+
+    @Test
+    public void testMainWithEmptyFile() throws IOException {
+<span class="fc" id="L20">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L21">        System.setOut(new PrintStream(output));</span>
+        // Create an empty file
+<span class="fc" id="L23">        try (PrintWriter writer = new PrintWriter(&quot;emptyFile.txt&quot;)) {</span>
+            // Intentionally left empty
+<span class="pc bpc" id="L25" title="7 of 8 branches missed.">        }</span>
+<span class="fc" id="L26">        String[] args = {&quot;emptyFile.txt&quot;};</span>
+<span class="fc" id="L27">        Printtokens.main(args);</span>
+<span class="fc" id="L28">        assertEquals(&quot;&quot;, output.toString());</span>
+<span class="fc" id="L29">        new File(&quot;emptyFile.txt&quot;).delete();</span>
+<span class="fc" id="L30">    }</span>
+    @Test 
+    public void testMainWithValidInput() throws IOException { 
+<span class="fc" id="L33">    	ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L34">    	System.setOut(new PrintStream(output)); </span>
+<span class="fc" id="L35">    	String[] args = {&quot;testInput.txt&quot;}; </span>
+<span class="fc" id="L36">    	try (PrintWriter writer = new PrintWriter(&quot;testInput.txt&quot;)) { </span>
+<span class="fc" id="L37">    		writer.println(&quot;xor 42 #z \&quot;test string\&quot; ;This is a comment&quot;); </span>
+    		} 
+<span class="fc" id="L39">    	Printtokens.main(args); assertEquals(&quot;keyword,\&quot;xor\&quot;.\nnumeric,42.\ncharacter,\&quot;z\&quot;.\nstring,\&quot;test string\&quot;.\ncomment,\&quot;;This is a comment\&quot;.\n&quot;, output.toString()); </span>
+<span class="fc" id="L40">    	new File(&quot;testInput.txt&quot;).delete(); }</span>
+
+
+    @Test
+    public void testMainWithSpecialSymbols() throws IOException {
+<span class="fc" id="L45">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L46">        System.setOut(new PrintStream(output));</span>
+<span class="fc" id="L47">        try (PrintWriter writer = new PrintWriter(&quot;specialSymbols.txt&quot;)) {</span>
+<span class="fc" id="L48">            writer.println(&quot;ABC( 5 )&quot;);</span>
+        }
+<span class="fc" id="L50">        String[] args = {&quot;specialSymbols.txt&quot;};</span>
+<span class="fc" id="L51">        Printtokens.main(args);</span>
+<span class="fc" id="L52">        String expectedOutput = </span>
+<span class="fc" id="L53">            &quot;identifier,\&quot;ABC\&quot;.\n&quot; +</span>
+            &quot;lparen.\n&quot; +
+            &quot;numeric,5.\n&quot; +
+            &quot;rparen.\n&quot;;
+<span class="fc" id="L57">        assertEquals(expectedOutput, output.toString());</span>
+<span class="fc" id="L58">        new File(&quot;specialSymbols.txt&quot;).delete();</span>
+<span class="fc" id="L59">    }</span>
+
+    @Test
+    public void testMainWithComplexTokens() throws IOException {
+<span class="fc" id="L63">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L64">        System.setOut(new PrintStream(output));</span>
+<span class="fc" id="L65">        try (PrintWriter writer = new PrintWriter(&quot;complexTokens.txt&quot;)) {</span>
+<span class="fc" id="L66">            writer.println(&quot;if (x =&gt; 10)&quot;);</span>
+        }
+<span class="fc" id="L68">        String[] args = {&quot;complexTokens.txt&quot;};</span>
+<span class="fc" id="L69">        Printtokens.main(args);</span>
+<span class="fc" id="L70">        String expectedOutput = </span>
+<span class="fc" id="L71">            &quot;keyword,\&quot;if\&quot;.\n&quot; +</span>
+            &quot;lparen.\n&quot; +
+            &quot;identifier,\&quot;x\&quot;.\n&quot; +
+            &quot;keyword,\&quot;=&gt;\&quot;.\n&quot; +
+            &quot;numeric,10.\n&quot; +
+            &quot;rparen.\n&quot;;
+<span class="fc" id="L77">        assertEquals(expectedOutput, output.toString());</span>
+<span class="fc" id="L78">        new File(&quot;complexTokens.txt&quot;).delete();</span>
+<span class="fc" id="L79">    }</span>
+
+    @Test
+    public void testMainWithConsoleInput() throws IOException {
+<span class="fc" id="L83">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L84">        System.setOut(new PrintStream(output));</span>
+        
+<span class="fc" id="L86">        String input = &quot;a ; \&quot;hello\&quot; ABC and 5 #c\n&quot;;</span>
+<span class="fc" id="L87">        System.setIn(new ByteArrayInputStream(input.getBytes()));</span>
+        
+<span class="fc" id="L89">        Printtokens.main(new String[]{});</span>
+        
+<span class="fc" id="L91">        String expectedOutput = &quot;identifier,\&quot;a\&quot;.\n&quot; + </span>
+                                &quot;comment,\&quot;; \&quot;hello\&quot; ABC and 5 #c\&quot;.\n&quot;;
+        
+<span class="fc" id="L94">        assertEquals(expectedOutput, output.toString());</span>
+<span class="fc" id="L95">    }</span>
+
+    @Test
+    public void testMainWithMixedTokenTypes() throws IOException {
+<span class="fc" id="L99">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L100">        System.setOut(new PrintStream(output));</span>
+<span class="fc" id="L101">        try (PrintWriter writer = new PrintWriter(&quot;mixedTokens.txt&quot;)) {</span>
+<span class="fc" id="L102">            writer.println(&quot;lambda (x) =&gt; x / 2&quot;);</span>
+        }
+<span class="fc" id="L104">        String[] args = {&quot;mixedTokens.txt&quot;};</span>
+<span class="fc" id="L105">        Printtokens.main(args);</span>
+<span class="fc" id="L106">        String expectedOutput = </span>
+<span class="fc" id="L107">            &quot;keyword,\&quot;lambda\&quot;.\n&quot; +</span>
+            &quot;lparen.\n&quot; +
+            &quot;identifier,\&quot;x\&quot;.\n&quot; +
+            &quot;rparen.\n&quot; +
+            &quot;keyword,\&quot;=&gt;\&quot;.\n&quot; +
+            &quot;identifier,\&quot;x\&quot;.\n&quot; +
+            &quot;slash.\n&quot; +
+            &quot;numeric,2.\n&quot;;
+<span class="fc" id="L115">        assertEquals(expectedOutput, output.toString());</span>
+<span class="fc" id="L116">        new File(&quot;mixedTokens.txt&quot;).delete();</span>
+<span class="fc" id="L117">    }</span>
+
+    @Test
+    public void testMainWithErrorTokens() throws IOException {
+<span class="fc" id="L121">        ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc" id="L122">        System.setOut(new PrintStream(output));</span>
+<span class="fc" id="L123">        try (PrintWriter writer = new PrintWriter(&quot;errorTokens.txt&quot;)) {</span>
+<span class="fc" id="L124">            writer.println(&quot;\&quot;unclosed string&quot;);</span>
+        }
+<span class="fc" id="L126">        String[] args = {&quot;errorTokens.txt&quot;};</span>
+<span class="fc" id="L127">        Printtokens.main(args);</span>
+<span class="fc" id="L128">        String expectedOutput = </span>
+<span class="fc" id="L129">            &quot;error,\&quot;\&quot;unclosed string\&quot;.\n&quot;;</span>
+<span class="fc" id="L130">        assertEquals(expectedOutput, output.toString());</span>
+<span class="fc" id="L131">        new File(&quot;errorTokens.txt&quot;).delete();</span>
+<span class="fc" id="L132">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span>PrinttokensMainMethodTest (Dec 12, 2024 5:17:30 PM)</div></body></html>

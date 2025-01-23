@@ -1,0 +1,32 @@
+[NOTE: We are using 4 slack days of Jayanth Reddy Gaddam(1002123569) to submit this project on 12/10/2024 from actual due date of 12/06/2024]
+Team Members:  Jayanth Reddy Gaddam(1002123569)
+               Jorge Catano (1002149092)
+
+
+1. Open Eclipse IDE on your computer.
+2. Create a new Java project and name it Printtokens.
+3. Delete any auto-generated .java files (e.g., module-info.java) under the src directory.
+
+Create a new package:
+4. In the src directory, create a new package named junitTesting.
+
+Import source files:
+5. Import the following files into the junitTesting package:
+    PrinttokensMainMethodTest.java
+    PrinttokensNonMainMethodTest.java
+    Printtokens.java
+
+Add JUnit 5 Library:
+6. After importing, you'll see errors related to JUnit.
+7. To resolve this, hover over the @Test or @Before annotations in PrinttokensMainMethodTest.java or PrinttokensNonMethodTest.java.
+8. A prompt will appear to add the JUnit 5 library; click to add it.
+9.  After adding the JUnit 5 library, the errors will be resolved, and the project will be ready for testing.
+
+Run the Tests:
+10. Right-click on the junitTesting package.
+11. Select Coverage As -> 1 JUnit Test to run the tests and generate a code coverage report.
+
+Export Code Coverage Report:
+12. Go to File -> Export -> Run/Debug -> Coverage Session.
+13. Select the coverage session you wish to export.
+14. Choose HTML report packed into a zip file and select the destination folder where the report will be generated.
